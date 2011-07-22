@@ -1,0 +1,5 @@
+content	thingie	chrome/content/
+
+overlay	chrome://browser/content/browser.xul chrome://thingie/content/thingie.xul
+
+

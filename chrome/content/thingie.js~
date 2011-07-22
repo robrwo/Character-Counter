@@ -1,0 +1,77 @@
+
+function showCharCount(el) {
+    var addonBar = document.getElementById("addon-bar");
+    if (addonBar) {
+	if (!document.getElementById("character-counter")) {
+	    var addonBarCloseButton = document.getElementById("addonbar-closebutton");
+	    addonBar.insertItem("character-counter", addonBarCloseButton.nextSibling);
+	}
+	var text = document.getElementById("character-counter-text");
+	if (el) {
+	    var count = null;
+	    var tag = el.localName;
+	    if (tag == "input") {
+		var type = el.getAttribute("type");
+		if ((type != "radio") && (type != "checkbox") && (type != "password")) {
+		    count = el.value.length;
+		}
+
+	    }
+	    else if (tag == "textarea") {
+		count = el.textContent.length;
+	    }
+	    else {
+		count = tag;
+	    }
+
+	    if (count) {
+		text.textContent = count;
+		addonBar.collapsed = false;
+	    } else {
+		addonBar.collapsed = true;
+	    }
+
+	}
+    }
+};
+
+function showFocus(ev) {
+    if (ev.target) {
+	showCharCount(ev.target);
+    }
+    ev.target.addEventListener("blur", hide, false);
+}
+
+function showChange(ev) {
+    if (ev.target) {
+	showCharCount(ev.target);
+    }
+}
+
+function hide(ev) {
+    var addonBar = document.getElementById("addon-bar");
+    if (addonBar) {
+	addonBar.collapsed = true;
+    }
+    if (ev.target) {
+	ev.target.removeEventListener("blur", hide, false);
+    }
+}
+
+
+function onPageLoad(ev) {
+    if (ev.originalTarget instanceof HTMLDocument) {
+	var win = ev.originalTarget.defaultView;
+	if (win.frameElement) {
+	    win = win.top;
+	}
+
+	win.addEventListener("focus", showFocus,  false);
+	win.addEventListener("keyup", showChange, false);
+
+    }
+}
+
+window.addEventListener("load", function(ev) {
+    gBrowser.addEventListener("load", onPageLoad, true);
+}, false);
